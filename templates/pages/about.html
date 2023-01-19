@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extrastyle %}
+<link rel="stylesheet" href="https://unpkg.com/flickity@2/dist/flickity.min.css">
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.min.css"> -->
+{% endblock %}
+
+{% block content %}
+<section id="about" class="about mt-3">
+    <div class="container">
+        <h1 class="heading">About COSION</h1>
+
+    <div class="row">
+
+        <div class="col-md-6 col-sm-12 content mb-4">
+            <h3>Computerized CAD System - Segmentation</h3>
+            <p><b>COSION (Cancerous Object Segmentation)</b> is a web-based application developed by Anan Nugroho, et al (2022)
+                who can segment objects suspected of cancer on ultrasound images automatically use a
+                method called <b>HERBAC (Hybrid Edge and Region Based Active Contour)</b>.</p>
+            <div class="about-btn">
+                <a href="https://drive.google.com/drive/folders/1Ex9LSPaEJWb6EGsrbqhiVBcSVpf2WlXj?usp=sharing" target="_blank"><button class="btn1">Journal</button></a>
+                <a href="https://drive.google.com/drive/folders/1b7z2yv523gBrRGsOTaSxivjhNWVWMGLg?usp=sharing" target="_blank"><button class="btn2">Monograph</button></a>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-sm-12 image">
+            <h3>Built With</h3>
+            
+            <div class="row-about">
+                <a href="https://www.python.org/" target="_blank"><div class="col-md-4 col-sm-6">
+                    <div class="img-area">
+                        <img src="{% static 'images/1.png' %}" alt="">
+                        <div class="overlay">
+                            <div class="content">
+                                <h4>Python</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div></a>
+
+                <a href="https://numpy.org/" target="_blank"><div class="col-md-4 col-sm-6">
+                    <div class="img-area">
+                        <img src="{% static 'images/2.png' %}" alt="">
+                        <div class="overlay">
+                            <div class="content">
+                                <h4>NumPy</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div></a>
+
+                <a href="https://www.djangoproject.com/" target="_blank"><div class="col-md-4 col-sm-6">
+                    <div class="img-area">
+                        <img src="{% static 'images/6.png' %}" alt="">
+                        <div class="overlay">
+                            <div class="content">
+                                <h4>Django</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div></a>
+
+                <a href="https://scikit-image.org/" target="_blank"><div class="col-md-4 col-sm-6">
+                    <div class="img-area">
+                        <img src="{% static 'images/4.png' %}" alt="">
+                        <div class="overlay">
+                            <div class="content text-center">
+                                <h4>Scikits Images</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div></a>
+
+                <a href="https://opencv.org/" target="_blank"><div class="col-md-4 col-sm-6">
+                    <div class="img-area">
+                        <img src="{% static 'images/5.png' %}" alt="">
+                        <div class="overlay">
+                            <div class="content text-center">
+                                <h4>Open CV</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div></a>
+            </div>
+
+        </div>
+
+    </div>
+    </div>
+</section>
+
+<!-- abuout section ends  -->
+{% endblock %}
+
+{% block extrajs %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"
+    integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://unpkg.com/flickity@2/dist/flickity.pkgd.min.js"></script>
+
+<script type="text/javascript">
+    $('.main-carousel').flickity({
+        // options
+        cellAlign: 'left',
+        wrapAround: true,
+        freeScrool: true
+    });
+</script>
+{% endblock %}

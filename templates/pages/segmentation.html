@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load static widget_tweaks %}
+
+{% block extrastyle %}
+<link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
+{% endblock %}
+
+{% block content %}
+    <section id="segmenttaion" class="segmentation">
+        <div class="container">
+            <div class="row">
+                <!-- Upload  -->
+                <form class="uploader" method="post" id="form-uploader" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {% for hidden in form.hidden_fields %}
+                    {{ hidden }}
+                    {% endfor %}
+
+                    {% for field in form.visible_fields %}
+                    {% render_field field class="form-input-file" %}
+                    <label for="{{ field.id_for_label }}">
+                        <div id="start">
+                            <i class="fa fa-cloud-arrow-up" aria-hidden="true"></i>
+                            <div>Upload USG's Images File here</div>
+                            <div id="notimage" class="hidden">Please select an image</div>
+                            <span id="file-upload-btn" class="btn btn-primary">Select a file</span>
+                        </div>
+                        <div id="response" class="hidden">
+                            <div id="messages"></div>
+                            <progress class="progress" id="file-progress" value="0">
+                                <span>0</span>%
+                            </progress>
+                        </div>
+                    </label>
+                    {% endfor %}
+                </form>
+            </div>
+
+
+            <div class="row">
+                {% include 'pages/sidebar.html' %}
+                <div class="row">
+                    <div class="col-sm-6 input-section">
+                        <div class="input-img">
+                            <div class="image">
+                                {% if file_url %}
+                                <img src="{{ file_url }}">
+                                {% endif %}
+                            </div>
+                            <div id="cancel-btn"><i class='bx bx-x'></i></div>
+                            <div class="file-name">
+                                <center>File name here</center>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div class="col-sm-6 output-section">
+                        <div class="result-img">
+                            <div class="image">
+                                <!-- <img src="../images/email-icon.png"> -->
+                                {% if file_res %}
+                                <img src="{{ file_res.reslt }}">
+                                {% endif %}
+                            </div>
+                            <div id="cancel-btn"><i class='bx bx-x'></i></div>
+                            <div class="file-name">
+                                <center>File name here</center>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block extrajs %}
+<!-- jquery file link  -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="{% static 'js/main.js' %}"></script>
+{% endblock %}

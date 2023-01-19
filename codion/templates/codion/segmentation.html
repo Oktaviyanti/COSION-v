@@ -1,0 +1,239 @@
+{% extends 'base.html' %}
+{% load static widget_tweaks rpl %}
+
+{% block extrastyle %}
+<link rel="stylesheet" href="{% static 'css/zoomple.css' %}" />
+
+{% endblock %}
+
+{% block content %}
+<section id="segmentaion" class="segmentation">
+    <div class="container-fluid">
+        <div class="row">
+
+            <div class="{% if not info.items %}col-12{% else %}col-xl-9 col-md-12{% endif %} mb-sm-5">
+                <div class="row">
+                    <!-- Upload  -->
+                    <form class="uploader" method="post" id="form-uploader" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {% for hidden in form.hidden_fields %}
+                        {{ hidden }}
+                        {% endfor %}
+
+                        {% for field in form.visible_fields %}
+                        {% render_field field class="form-input-file" %}
+                        <label for="{{ field.id_for_label }}">
+                            <div id="start">
+                                <i class="fa fa-cloud-arrow-up" aria-hidden="true"></i>
+                                <div>Upload USG's Images File here</div>
+                                <div id="notimage" class="hidden">Please select an image</div>
+                                <span id="file-upload-btn" class="btn btn-primary">Select a file</span>
+                            </div>
+                            <div id="progress-wrapper">
+                                <div id="progress-bar" style="background-color: #F8F8FF; width: 0%;">&nbsp;</div>
+                                <div id="progress-bar-message"></div>
+                            </div>
+                        </label>
+                        {% endfor %}
+                    </form>
+                </div>
+
+                <div class="row hidden" id="imgResult">
+                    <div class="col-md-4 col-sm-12">
+                        <div class="input-img active">
+                            <div class="image">
+                                {% if file_url %}
+                                <a class="zoomple" target="_blank">
+                                    <img data-enlargeable id="imgInputOri" src="{{ file_url }}">
+                                </a>
+                                {% endif %}
+
+                                <!-- <a class="zoomple" target="_blank">
+                                        <img data-enlargeable id="imgInputOri" src="/media/codion/1.png">
+                                    </a> -->
+                            </div>
+                            <div id="cancel-btn"><i class='bx bx-x'></i></div>
+                            <div class="file-name text-center">Input Image</div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 col-sm-12">
+                        <div class="input-img active">
+                            <div class="image">
+                                {% if file_out.img_result %}
+                                <a class="zoomple" target="_blank">
+                                    <img data-enlargeable id="imgResultOri" src="{{ file_out.img_result }}">
+                                </a>
+                                {% endif %}
+                            </div>
+                            <div id="cancel-btn"><i class="bx bx-x"></i></div>
+                            <div class="file-name text-center">Detection Image</div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 col-sm-12">
+                        <div class="input-img active">
+                            <div class="image">
+                                {% if file_out.img_output %}
+                                <a class="zoomple" target="_blank">
+                                    <img data-enlargeable id="imgOutputOri" src="{{ file_out.img_output }}">
+                                </a>
+                                {% endif %}
+                            </div>
+                            <div id="cancel-btn"><i class='bx bx-x'></i></div>
+                            <div class="file-name text-center">Output Image</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% if info.items %}
+            <div class="col-xl-3 col-sm-12 segcol2">
+                <h3 class="label-info text-center">INFORMATION</h3>
+                <ol class="list-group">
+                    {% for k,v in info.items %}
+                    <li class="list-group-item d-flex justify-content-between align-items-start">
+                        <div class="ms-2 me-auto">
+                            {% with key=k|to_spc %}
+                            <div class="fw-bold">{{ key|title }} : </div>
+                            {% endwith %}
+                        </div>
+                        <!-- <span class="badge bg-primary rounded-pill">{{ v }}</span> -->
+                        <p class="mb-2">{{ v }}</p>
+                    </li>
+                    {% endfor %}
+                </ol>
+
+                <div class="row">
+                    <div class="col-12 btnDel">
+            
+                        <button type="button" class="btn btnGif" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                            Process
+                        </button>
+                        
+                        <!-- Modal -->
+                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                            aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Segmentation Process</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    {% if file_out.gif_result %}
+                                    <div class="modal-body">
+                                        <img src="{{ file_out.gif_result }}" class="img-fluid" alt="...">
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+
+                        <button type="button" class="btn btn-danger btnDelete"
+                            data-url="{% url 'codion:delete_file' %}">
+                            Delete file
+                        </button>
+
+
+
+                    </div>
+                </div>
+
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extrajs %}
+<script src="{% static 'js/zoomple.js' %}"></script>
+<script>
+    const button = document.querySelector("#file-upload-btn");
+    const input = document.querySelector(".form-input-file");
+    const fileName = document.querySelectorAll(".file-name");
+    const imgResult = document.getElementById('imgResult');
+    // imgResult.classList.remove('hidden');
+
+
+
+    input.addEventListener("change", function () {
+        // getting user select file and [0] this means if user select multiple files then we'll select only the first one
+
+        if (this.value) {
+            document.getElementById('form-uploader').submit();
+        }
+        showProcessBar()
+    });
+
+    const method = '{{ request.method }}'
+
+    if (method == 'POST') {
+        imgResult.classList.remove('hidden');
+    };
+
+    function updateProgress(progressBarElement, progressBarMessageElement, progress) {
+        progressBarElement.style.width = progress.percent + "%"
+        progressBarMessageElement.innerHTML = 'segmentation process is in progress (' + progress.current + '%)';
+    };
+
+    function showProcessBar() {
+        var bar = document.getElementById('progress-bar')
+        var barMessage = document.getElementById('progress-bar-message');
+        for (var i = 0; i < 100; i++) {
+            setTimeout(updateProgress, 400 * i, bar, barMessage, {
+                percent: 1 * i,
+                current: 1 * i,
+                total: 100
+            })
+        }
+    };
+
+    $('img[data-enlargeable]').addClass('img-enlargeable').click(function () {
+        var src = $(this).attr('src');
+        var modal;
+
+        function removeModal() {
+            modal.remove();
+            $('body').off('keyup.modal-close');
+        }
+        modal = $('<div>').css({
+            background: 'RGBA(0,0,0,.5) url(' + src + ') no-repeat center',
+            backgroundSize: 'contain',
+            width: '100%',
+            height: '100%',
+            position: 'fixed',
+            zIndex: '10000',
+            top: '0',
+            left: '0',
+            cursor: 'zoom-out'
+        }).click(function () {
+            removeModal();
+        }).appendTo('body');
+        //handling ESC
+        $('body').on('keyup.modal-close', function (e) {
+            if (e.key === 'Escape') {
+                removeModal();
+            }
+        });
+    });
+
+    $('.btnDelete').on('click', (e) => {
+        const btnUrl = $('.btnDelete').attr('data-url')
+        console.log(btnUrl)
+        $.ajax({
+            url: btnUrl,
+            method: 'GET'
+        }).done((resp) => {
+            if (resp.success) {
+                alert(resp.success);
+                window.location.href = '{% url "codion:segmentation" %}';
+            } else if (resp.err_msg) {
+                alert(resp.err_msg);
+            }
+        })
+    });
+</script>
+{% endblock %}
