@@ -228,33 +228,33 @@ class Segmentation:
                 #     cv2.FONT_HERSHEY_COMPLEX,
                 #     0.5, (0, 255, 0), 1
                 # )
-                self.information.append({
-                    "name": self.filename,
-                    "area": region.area,
-                    "bbox_area": region.bbox_area,
-                    "convex_area": region.convex_area,
-                    "primeter": round(
-                        region.perimeter, 2
-                    ),
-                    "orientation": round(
-                        region.orientation, 2
-                    ),
-                    "major_axis_length": round(
-                        region.major_axis_length, 2
-                    ),
-                    "minor_axis_length": round(
-                        region.minor_axis_length, 2
-                    ),
-                    "eccentricity": round(
-                        region.eccentricity, 2
-                    ),
-                    "equivalent_diameter": round(
-                        region.equivalent_diameter, 2
-                    ),
-                    "bbox": region.bbox
+                # self.information.append({
+                #     "name": self.filename,
+                #     "area": region.area,
+                #     "bbox_area": region.bbox_area,
+                #     "convex_area": region.convex_area,
+                #     "primeter": round(
+                #         region.perimeter, 2
+                #     ),
+                #     "orientation": round(
+                #         region.orientation, 2
+                #     ),
+                #     "major_axis_length": round(
+                #         region.major_axis_length, 2
+                #     ),
+                #     "minor_axis_length": round(
+                #         region.minor_axis_length, 2
+                #     ),
+                #     "eccentricity": round(
+                #         region.eccentricity, 2
+                #     ),
+                #     "equivalent_diameter": round(
+                #         region.equivalent_diameter, 2
+                #     ),
+                #     "bbox": region.bbox
                     # "centroid": region.centroid,
                     # "coords": region.coords
-                })
+                # })
         g = fillObj
         phi = -2*maskBW+1
         init = 0
@@ -380,8 +380,6 @@ class Segmentation:
             cmap='gray'
         )
 
-        time = process_time() - time
-
         # build gif
         with imageio.get_writer(os.path.join(self.config, "gif_result_" + self.filename + ".gif"), mode='I') as writer:
             for usg in usgs:
@@ -392,12 +390,47 @@ class Segmentation:
         for usg in set(usgs):
             os.remove(usg)
 
+        time = process_time() - time
 
         self.information.append({
             "img_output": '/media/codion/output_' + self.filename,
             "img_result": '/media/codion/img_result_' + self.filename,
-            "gif_result": '/media/codion/gif_result_' + self.filename + '.gif',
-            "time": time
+            "gif_result": '/media/codion/gif_result_' + self.filename + '.gif'
+            
         })
-        
+
+        labelOb = measure.label(phi)
+        propObj = measure.regionprops(labelOb)
+        area = []
+        for region in (propObj):
+            area.append(region.minor_axis_length)
+            minr, minc, maxr, maxc = region.bbox
+            if (region.minor_axis_length/max(area)) <= 0.7:
+                self.information.append({
+                    "name": self.filename,
+                    "area": region.area,
+                    "convex_area": region.convex_area,
+                    "primeter": round(
+                        region.perimeter, 2
+                    ),
+                    "orientation": round(
+                        region.orientation, 2
+                    ),
+                    "major_axis_length": round(
+                        region.major_axis_length, 2
+                    ),
+                    "minor_axis_length": round(
+                        region.minor_axis_length, 2
+                    ),
+                    "eccentricity": round(
+                        region.eccentricity, 2
+                    ),
+                    "equivalent_diameter": round(
+                        region.equivalent_diameter, 2
+                    ),
+                    "time": time
+                }) 
         return self.information
+        
+        
+        
