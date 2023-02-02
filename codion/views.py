@@ -42,8 +42,8 @@ class SegmentationView(TemplateView):
         segment = segment.get_image()
         result = {
             "file_url": url,
-            "file_out": segment[1],
-            "info": segment[0]
+            "file_out": segment[0],
+            "info": segment[1]
         }
         return result
 
