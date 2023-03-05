@@ -59,7 +59,7 @@ def visual_callback_2d(background, fig=None):
 
         if visual_callback_2d.ax1.collections:
             del visual_callback_2d.ax1.collections[0]
-        visual_callback_2d.ax1.contour(levelset, [0.5], colors='r')
+        visual_callback_2d.ax1.contour(levelset, [0.05], colors='r')
         ax_u.set_data(levelset)
         visual_callback_2d.fig.canvas.draw()
         # plt.pause(0.1)
