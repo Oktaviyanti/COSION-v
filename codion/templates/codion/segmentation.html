@@ -165,8 +165,15 @@
         if (this.value) {
             document.getElementById('form-uploader').submit();
         }
-        showProcessBar()
+//         showProcessBar()
+        showSpinner();
     });
+    function showSpinner(){
+        const spinBtn = '<div class="text-center" style="left: 15px"><div class="spinner-border text-light m-5" style="width: 10rem; height: 10rem;" role="status"></div><div><span class="" style="font-size: 20px; color: white;">Segmentation process is in progress...</span></div></div>'
+        const uploadBtn = document.getElementById('form-uploader')
+        uploadBtn.innerHTML = spinBtn
+    };
+
 
     const method = '{{ request.method }}'
 
